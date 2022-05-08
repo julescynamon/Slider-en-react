@@ -10,22 +10,42 @@ export default function Slider() {
 	});
 
 	const nextSlide = () => {
-		if (slideAnim.index !== dataSlider.length) {
+		if (slideAnim.index !== dataSlider.length && !slideAnim.inProgress) {
 			setSlideAnim({ index: slideAnim.index + 1, inProgress: true });
-		} else if (slideAnim.index === dataSlider.length) {
+			setTimeout(() => {
+				setSlideAnim({ index: slideAnim.index + 1, inProgress: false });
+			}, 400);
+		} else if (
+			slideAnim.index === dataSlider.length &&
+			!slideAnim.inProgress
+		) {
 			setSlideAnim({ index: 1, inProgress: true });
+			setTimeout(() => {
+				setSlideAnim({ index: 1, inProgress: false });
+			}, 400);
 		}
 	};
 	const prevSlide = () => {
-		if (slideAnim.index !== 1) {
+		if (slideAnim.index !== 1 && !slideAnim.inProgress) {
 			setSlideAnim({
 				index: slideAnim.index - 1,
 				inProgress: true,
 			});
-		} else if (slideAnim.index === 1) {
+			setTimeout(() => {
+				setSlideAnim({ index: slideAnim.index - 1, inProgress: false });
+			}, 400);
+		} else if (slideAnim.index === 1 && !slideAnim.inProgress) {
 			setSlideAnim({ index: 5, inProgress: true });
+			setTimeout(() => {
+				setSlideAnim({ index: 5, inProgress: false });
+			}, 400);
 		}
 	};
+
+    const moveDot = index => {
+        setSlideAnim({ index: index, inProgress: false });
+    }
+
 	return (
 		<div className='container-slider'>
 			{dataSlider.map((obj, index) => {
@@ -50,6 +70,20 @@ export default function Slider() {
 			})}
 			<BtnSlider moveSlide={nextSlide} direction='next' />
 			<BtnSlider moveSlide={prevSlide} direction='prev' />
+			<div className='container-dots'>
+				{Array.from({ length: 5 }).map((item, index) => {
+					return (
+						<div
+							className={
+								slideAnim.index === index + 1
+									? "dot active"
+									: "dot"
+							}
+                            onClick={() => moveDot(index + 1)}
+						></div>
+					);
+				})}
+			</div>
 		</div>
 	);
 }
